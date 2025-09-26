@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koneksyon</title>
+    <a href="#" class="nav-back" onclick="history.back()">← Tounen</a>
+    <link rel="stylesheet" href="Konekte.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Konekte</h1>
+            <p>Antre nan kont ou a</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            Koneksyon aksepte! Nou pral redirije w...
+
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Imel oswa Non Itilizatè</label>
+                <input type="text" id="email" name="email" required>
+                <div class="error-message" id="emailError">Tanpri antre yon imel ki valab</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Modpas</label>
+                <input type="password" id="password" name="password" required>
+                <span class="password-toggle" id="passwordToggle">👁️</span>
+                <div class="error-message" id="passwordError">Modpas la dwe gen omwen 6 karaktè</div>
+            </div>
+
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">Sonje mwen</label>
+            </div>
+
+            <div class="forgot-password">
+                <a href="#" id="forgotPassword">Bliye modpas la?</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+
+                <span id="btnText">Konekte</span>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                </div>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>oswa</span>
+        </div>
+
+        <div class="social-login">
+            <button class="social-btn" id="googleLogin">
+                🌐 Konekte ak Google
+            </button>
+            <button class="social-btn" id="facebookLogin">
+                📘 Konekte ak Facebook
+            </button>
+        </div>
+
+        <div class="register-link">
+            Pa gen kont? <a href="Enskripsyon.html" >Kreye yon kont</a>
+        </div>
+    </div>
+
+
+    <script>
+        // Elèman yo
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const loginBtn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('btnText');
+        const loading = document.getElementById('loading');
+        const successMessage = document.getElementById('successMessage');
+        
+        // Fonksyon yo
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email) || email.length > 3; // Aksepte non itilizatè tou
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            input.classList.add('error');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+
+        function hideError(inputId, errorId) {
+            const input = document.getElementById(inputId);
+
+            const error = document.getElementById(errorId);
+            input.classList.remove('error');
+            error.style.display = 'none';
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                loginBtn.disabled = true;
+                btnText.style.display = 'none';
+                loading.style.display = 'block';
+
+            } else {
+                loginBtn.disabled = false;
+                btnText.style.display = 'block';
+                loading.style.display = 'none';
+            }
+        }
+
+        function showSuccess() {
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                // Ou ka redirije moun nan isit la
+                alert('Redireksyon nan paj prensipal la...');
+            }, 2000);
+        }
+
+        // Event listeners yo
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type',type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        emailInput.addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                hideError('email', 'emailError');
+            }
+        });
+
+        passwordInput.addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                hideError('password', 'passwordError');
+            }
+        });
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+
+            const password = passwordInput.value;
+            let isValid = true;
+
+            // Validation
+            if (!validateEmail(email)) {
+                showError('email', 'emailError', 'Tanpri antre yon imel ki valab oswa non itilizatè');
+                isValid = false;
+            }
+
+            if (!validatePassword(password)) {
+                showError('password', 'passwordError', 'Modpas la dwe gen omwen 6 karaktè');
+                isValid = false;
+            }
+
+            if (isValid) {
+                setLoading(true);
+                
+                // Simile yon request (ou ka chanje sa a ak yon API request reyèl)
+                setTimeout(() => {
+                    setLoading(false);
+                    
+                    // Tcheke konte yo (sa se yon egzanp sèlman)
+                    if (email === 'admin' && password === '123456') {
+                        showSuccess();
+                    } else if (email.includes('@') && password.length >= 6) {
+                        showSuccess();
+                    } else {
+                        alert('Enfòmasyon koneksyon yo pa bon. Eseye ankò!');
+                    }
+                }, 2000);
+            }
+        });
+
+        // Social login yo
+
+        document.getElementById('googleLogin').addEventListener('click', function() {
+            alert('Koneksyon ak Google...');
+        });
+
+        document.getElementById('facebookLogin').addEventListener('click', function() {
+            alert('Koneksyon ak Facebook...');
+        });
+
+        document.getElementById('forgotPassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = prompt('Antre imel ou a pou reset modpas la:');
+            if (email) {
+                alert('Nou voye yon lyen reset nan: ' + email);
+            }
+        });
+
+        document.getElementById('registerLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Redireksyon nan paj enskripsyon an...');
+        });
+
+        // Otofokis sou imel lan
+        emailInput.focus();
+    </script>
+</body>
+</html>

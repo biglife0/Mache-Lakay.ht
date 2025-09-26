@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mache Lakay - Achte ak Vann</title>
+   <link rel="stylesheet" href="verifikasyon.css">
+</head>
+<title>Enskri w - Mache Lakay</title>
+</head><link rel="stylesheet" href="Enskripsyon.css">
+<body><a href="#" class="nav-back" onclick="history.back()">← Tounen</a>
+<div class="container">
+
+    <div class="header">
+        <h1>🏪 Mache Lakay</h1>
+        <p>Kominote kòmès nou an - Vann ak Achte Fasil</p>
+    </div>
+    
+    <div class="form-container">
+        <div class="user-type">
+            <h3>Ki sa ou vle fè?</h3>
+            <div class="type-options">
+                <div class="type-option" onclick="selectType('seller')">
+
+                    <div class="icon">🛍️</div>
+                    <h4>Mwen Vle Vann</h4>
+                    <p>Vann pwodwi ak sèvis mwen yo</p>
+                </div>
+                <div class="type-option" onclick="selectType('buyer')">
+                    <div class="icon">🛒</div>
+                    <h4>Mwen Vle Achte</h4>
+                    <p>Jwenn sa mwen bezwen</p>
+
+                </div>
+            </div>
+        </div>
+        
+        <form id="registrationForm">
+            <!-- Enfòmasyon Common -->
+            <div class="form-group">
+                <label for="fullName">Non Konplè *</label>
+                <input type="text" id="fullName" name="fullName" required>
+
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Nimewo Telefòn *</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input type="email" id="email" name="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="location">Kote ou ye (Vil/Zòn) *</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+            
+            <!-- Champ pou Vendè yo -->
+
+            <div id="sellerFields" class="hidden">
+                <div class="form-group">
+                    <label for="businessName">Non Biznis/Magazen</label>
+                    <input type="text" id="businessName" name="businessName">
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Ki kalite pwodwi/sèvis ou vann? *</label>
+                    <select id="category" name="category">
+                        <option value="">Chwazi yon kategori</option>
+                        <option value="manje">Manje ak Bwason</option>
+                        <option value="rad">Rad ak Akseswa</option>
+                        <option value="lakay">Bagay Lakay</option>
+                        <option value="teknoloji">Teknoloji ak Elektwonik</option>
+                        <option value="sante">Sante ak Bote</option>
+                        <option value="otomobil">Otomobil ak Transpò</option>
+                        <option value="konstwi">Materyèl Konstriksyon</option>
+                        <option value="agrikilti">Agrikilti ak Jardinage</option>
+                        <option value="sèvis">Sèvis (Depo, Transpò, etc.)</option>
+                        <option value="lòt">Lòt</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Dekri pwodwi/sèvis ou yo</label>
+                    <textarea id="description" name="description" placeholder="Eksplike sa ou vann ak ki jan ou travay..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="experience">Konbyen tan ou gen nan biznis la?</label>
+                    <select id="experience" name="experience">
+                        <option value="">Chwazi</option>
+                        <option value="nouvo">Nouvo (mwens pase 6 mwa)</option>
+                        <option value="1an">6 mwa - 1 an</option>
+                        <option value="2-5an">2-5 ane</option>
+                        <option value="5an+">5 ane oswa plis</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Champ pou Achtè yo -->
+            <div id="buyerFields" class="hidden">
+
+                <div class="form-group">
+                    <label for="interests">Ki kalte bagay ou pi enterese achte?</label>
+                    <select id="interests" name="interests" multiple>
+                        <option value="manje">Manje ak Bwason</option>
+                        <option value="rad">Rad ak Akseswa</option>
+                        <option value="lakay">Bagay Lakay</option>
+                        <option value="teknoloji">Teknoloji ak Elektwonik</option>
+                        <option value="sante">Sante ak Bote</option>
+                        <option value="otomobil">Otomobil ak Transpò</option>
+                        <option value="konstwi">Materyèl Konstriksyon</option>
+                        <option value="agrikilti">Agrikilti ak Jardinage</option>
+                        <option value="sèvis">Sèvis</option>
+                    </select>
+                    <small style="color: #666;">Kenbe Ctrl (oswa Cmd) pou chwazi plizyè</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="budget">Ki bidjè ou genyen nan mwa?</label>
+                    <select id="budget" name="budget">
+                        <option value="">Chwazi</option>
+                        <option value="1000-">Mwens pase 1,000 gourdes</option>
+                        <option value="1000-5000">1,000 - 5,000 gourdes</option>
+                        <option value="5000-15000">5,000 - 15,000 gourdes</option>
+                        <option value="15000+">15,000 gourdes oswa plis</option>
+                    </select>
+                </div>
+            </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 style="text-align: center; color: #1e3c72; margin-bottom: 20px;">Peyman Frè Vandè</h2>
+            <p style="text-align: center; margin-bottom: 30px;">Frè enskripsyon: <strong>$200 HTG</strong></p>
+            
+            <div class="form-group">
+                <label>Metòd Peyman</label>
+                <select id="payment-method">
+                    <option value="moncash">MonCash</option>
+                    <option value="natcash">NatCash</option>
+                    <option value="bank">Bank Transfer</option>
+                    <option value="cash">Cash nan Office</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Nimewo Telefòn pou Peyman</label>
+                <input type="tel" id="payment-phone" placeholder="509 XXXX XXXX">
+            </div>
+            
+            <button class="btn btn-success" style="width: 100%;" onclick="processPayment()">
+                Konfime Peyman
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Sample products data
+        const sampleProducts = [
+            {
+
+                title: "iPhone 13 Pro Max",
+                price: "45,000 HTG",
+                description: "Telefòn ki nan kondisyon bon, ak tout akseswa yo",
+                seller: "TechStore Haiti",
+                category: "Teknoloji",
+                image: "📱"
+            },
+            {
+                title: "Diri Premium 50lb",
+                price: "3,500 HTG",
+                description: "Diri kalite bon nan sak 50 liv, nou ka livré",
+                seller: "AgriHaiti",
+
+                category: "Manje",
+                image: "🌾"
+            },
+            {
+                title: "Machin Motè Yamaha",
+                price: "120,000 HTG",
+                description: "Motè Yamaha 2022, kondisyon ekselan",
+                seller: "Moto Plus",
+                category: "Otomobil",
+                image: "🏍️"
+            },
+            {
+                title: "Ensemble Salon Modern",
+                price: "25,000 HTG",
+                description: "Salon konplè ak 7 chèz, jan nèf",
+                seller: "Meuble Delmas",
+                category: "Kay",
+                image: "🛋️"
+            },
+            {
+                title: "Rad Pou Fanm Collection",
+                price: "800 HTG",
+                description: "Bèl rad pou fanm, différents style ak koulè",
+                seller: "Fashion Haiti",
+                category: "Rad",
+                image: "👗"
+            },
+            {
+                title: "Laptop Dell Inspiron",
+                price: "28,000 HTG",
+                description: "Laptop pou travay ak jwe, 8GB RAM, 256GB SSD",
+                seller: "Computer World",
+                category: "Teknoloji",
+                image: "💻"
+            }
+        ];
+
+
+        // Show different sections
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+
+            // Load products if products section is selected
+            if (sectionId === 'products-section') {
+                loadProducts();
+            }
+        }
+
+        // Load products
+        function loadProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            sampleProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">${product.image}</div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <div class="product-price">${product.price}</div>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-seller">Vandè: ${product.seller}</div>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 15px;">
+                            Kontak Vandè
+                        </button>
+                    </div>
+                `;
+                container.appendChild(productCard);
+            });
+        }
+
+        // Handle buyer form submission
+        document.getElementById('buyer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const buyerData = {
+                nom: document.getElementById('buyer-nom').value,
+                email: document.getElementById('buyer-email').value,
+                telefon: document.getElementById('buyer-telefon').value,
+                vil: document.getElementById('buyer-vil').value,
+                adres: document.getElementById('buyer-adres').value
+            };
+            
+            // Simulate registration
+
+            alert('🎉 Ou enskri kòm achetè ak siksè! Byenveni nan HaitiMarket!');
+            
+            // Reset form
+            this.reset();
+        });
+
+        // Handle seller form submission
+        document.getElementById('seller-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+
+            // Show payment modal
+            document.getElementById('paymentModal').style.display = 'block';
+        });
+
+        // Close modal
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Process payment
+        function processPayment() {
+            const method = document.getElementById('payment-method').value;
+            const phone = document.getElementById('payment-phone').value;
+            
+            if (!phone) {
+                alert('Tanpri antre nimewo telefòn pou peyman an');
+                return;
+            }
+            
+            // Simulate payment processing
+            alert(`Peyman $200 HTG ak ${method} ap trete... W ap resevwa konfimasyòn nan ${phone}`);
+            
+            // Close modal
+            document.getElementById('paymentModal').style.display = 'none';
+            
+            // Show success message
+            const sellerSection = document.getElementById('seller-section');
+            sellerSection.innerHTML = `
+                <div class="form-container">
+                    <div class="success-message">
+                        <h2>🎉 Peyman Konfime!</h2>
+                        <p>Ou peye frè $200 HTG ak siksè. Koun ou kòm vandè ap aktive nan 24 èdtan.</p>
+                        <p>W ap resevwa yon email konfimasyòn ak detay yo.</p>
+                        <button class="btn btn-primary" onclick="location.reload()">
+                            Retounen nan Akèy
+                        </button>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load products on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+        });
+    </script>
+</body>
+</html>

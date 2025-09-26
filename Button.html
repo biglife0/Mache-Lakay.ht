@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace - Achte ak Vann</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #666;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .main-button {
+            padding: 20px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .buy-button {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+
+        }
+        
+        .buy-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.4);
+        }
+        
+        .sell-button {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.3);
+
+        }
+        
+        .sell-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(33, 150, 243, 0.4);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .dashboard {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+
+            margin-top: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .payment-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+
+            margin: 20px 0;
+        }
+        
+        .verification-code {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 15px 0;
+        }
+        
+        .add-product-btn {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .add-product-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🛍️ Marketplace</h1>
+            <p>Chwazi si w vle achte oswa vann pwodwi yo</p>
+            <div class="button-container">
+                <button class="main-button buy-button" onclick="openBuyModal()">
+                    🛒 Achte
+                </button>
+                <button class="main-button sell-button" onclick="openSellModal()">
+                    💰 Vann
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard Achtè -->
+        <div id="buyerDashboard" class="dashboard">
+            <h2>🛒 Dashboard Achtè</h2>
+            <p><strong>Pwodwi ki disponib yo:</strong></p>
+            <div id="buyerProducts" class="products-grid">
+
+                <div class="product-card">
+                    <h3>📱 iPhone 14</h3>
+                    <p><strong>Pri:</strong> $800</p>
+                    <p><strong>Deskripsyon:</strong> Telefòn nan kondisyon trè bon</p>
+                    <button class="submit-btn" onclick="buyProduct('iPhone 14', '$800')">Achte Kounye a</button>
+                </div>
+
+                <div class="product-card">
+                    <h3>💻 Laptop Dell</h3>
+                    <p><strong>Pri:</strong> $1200</p>
+                    <p><strong>Deskripsyon:</strong> Òdinatè pou travay ak jwèt</p>
+                    <button class="submit-btn" onclick="buyProduct('Laptop Dell', '$1200')">Achte Kounye a</button>
+                </div>
+
+                <div class="product-card">
+                    <h3>🏍️ Motosiklèt Honda</h3>
+                    <p><strong>Pri:</strong> $3500</p>
+                    <p><strong>Deskripsyon:</strong> Motosiklèt 2020, bon kondisyon</p>
+                    <button class="submit-btn" onclick="buyProduct('Motosiklèt Honda', '$3500')">Achte Kounye a</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Dashboard Vandè -->
+        <div id="sellerDashboard" class="dashboard">
+            <h2>💰 Dashboard Vandè</h2>
+            <button class="add-product-btn" onclick="openAddProductModal()">
+                ➕ Ajoute Nouvo Pwodwi
+            </button>
+            <div id="sellerProducts" class="products-grid">
+                <div class="product-card">
+                    <h3>📦 Pwodwi ou yo</h3>
+                    <p>Apre w ajoute pwodwi, y ap parèt la a</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pou Achte -->
+    <div id="buyModal" class="modal">
+        <div class="modal-content">
+
+            <span class="close" onclick="closeBuyModal()">&times;</span>
+            <h2>📝 Ranpli Enfòmasyon Achtè</h2>
+            <form id="buyerForm">
+                <div class="form-group">
+                    <label for="buyerName">Non Konplè:</label>
+                    <input type="text" id="buyerName" placeholder="Antre non ou" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="buyerEmail">Email:</label>
+                    <input type="email" id="buyerEmail" placeholder="Antre email ou" required>
+                </div>
+                <div class="form-group">
+                    <label for="buyerPhone">Nimewo Telefòn:</label>
+                    <input type="tel" id="buyerPhone" placeholder="Antre nimewo telefòn ou" required>
+                </div>
+                <div class="form-group">
+                    <label for="buyerAddress">Adrès:</label>
+                    <input type="text" id="buyerAddress" placeholder="Antre adrès ou" required>
+                </div>
+                <button type="submit" class="submit-btn">✅ Anrejistre ak Kontinye</button>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal pou Vann -->
+    <div id="sellModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSellModal()">&times;</span>
+            <h2>💳 Kominòte ak nou</h2>
+            <div class="payment-section">
+                <h3>💵 Frè Enskripsyon: $200 HTG</h3>
+                <p>Pou w ka kominòte vann sou platfòm nan, ou dwe peye frè enskripsyon $200 HTG.</p>
+                <div class="form-group">
+                    <label for="paymentMethod">Chwazi Metòd Peman:</label>
+                    <select id="paymentMethod" required>
+                        <option value="">-- Chwazi yon metòd --</option>
+                        <option value="moncash">📱 MonCash</option>
+                        <option value="natcash">💳 NatCash</option>
+                        <option value="bank">🏦 Bank</option>
+                        <option value="unibank">🏛️ Unibank</option>
+                    </select>
+                </div>
+                <button class="submit-btn" onclick="processPayment()">💰 Peye Kounye a</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal pou Ajoute Pwodwi -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddProductModal()">&times;</span>
+            <h2>➕ Ajoute Nouvo Pwodwi</h2>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label for="productName">Non Pwodwi:</label>
+                    <input type="text" id="productName" placeholder="Antre non pwodwi a" required>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Pri (nan dola):</label>
+                    <input type="number" id="productPrice" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Deskripsyon:</label>
+                    <input type="text" id="productDescription" placeholder="Dekri pwodwi a" required>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Kategori:</label>
+                    <select id="productCategory" required>
+                        <option value="">-- Chwazi kategori --</option>
+                        <option value="electronics">📱 Elektwonik</option>
+                        <option value="vehicles">🚗 Machin</option>
+                        <option value="clothing">👕 Rad</option>
+                        <option value="home">🏠 Kay</option>
+
+                        <option value="other">📦 Lòt</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">✅ Ajoute Pwodwi</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        console.log("Script ap kòmanse...");
+        
+        // Variables pou stock done yo
+        let currentUser = null;
+        let products = [];
+        let sellers = [];
+        let buyers = [];
+
+        // Fonksyon pou ouvè modal achte
+        function openBuyModal() {
+            console.log("Ouvè modal achte");
+            document.getElementById('buyModal').style.display = 'block';
+        }
+
+        // Fonksyon pou fèmen modal achte
+        function closeBuyModal() {
+            console.log("Fèmen modal achte");
+            document.getElementById('buyModal').style.display = 'none';
+        }
+
+        // Fonksyon pou ouvè modal vann
+        function openSellModal() {
+            console.log("Ouvè modal vann");
+            document.getElementById('sellModal').style.display = 'block';
+        }
+
+        // Fonksyon pou fèmen modal vann
+        function closeSellModal() {
+            console.log("Fèmen modal vann");
+            document.getElementById('sellModal').style.display = 'none';
+        }
+
+        // Fonksyon pou ouvè modal ajoute pwodwi
+
+        function openAddProductModal() {
+            console.log("Ouvè modal ajoute pwodwi");
+            document.getElementById('addProductModal').style.display = 'block';
+        }
+
+        // Fonksyon pou fèmen modal ajoute pwodwi
+        function closeAddProductModal() {
+            console.log("Fèmen modal ajoute pwodwi");
+
+            document.getElementById('addProductModal').style.display = 'none';
+        }
+
+        // Fonksyon pou anrejistre achtè
+        document.getElementById('buyerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log("Anrejistre achtè");
+            
+
+            const buyerData = {
+                name: document.getElementById('buyerName').value,
+                email: document.getElementById('buyerEmail').value,
+                phone: document.getElementById('buyerPhone').value,
+                address: document.getElementById('buyerAddress').value,
+                type: 'buyer'
+            };
+            
+
+            buyers.push(buyerData);
+            currentUser = buyerData;
+            
+            closeBuyModal();
+            showBuyerDashboard();
+            
+            alert('🎉 Ou anrejistre ak siksè! Ou ka kominòte achte kounye a.');
+        });
+
+        // Fonksyon pou montre dashboard achtè
+        function showBuyerDashboard() {
+            console.log("Montre dashboard achtè");
+            document.getElementById('buyerDashboard').style.display = 'block';
+            document.getElementById('sellerDashboard').style.display = 'none';
+        }
+
+        // Fonksyon pou montre dashboard vandè
+        function showSellerDashboard() {
+            console.log("Montre dashboard vandè");
+
+            document.getElementById('sellerDashboard').style.display = 'block';
+            document.getElementById('buyerDashboard').style.display = 'none';
+        }
+
+        // Fonksyon pou trete peman
+        function processPayment() {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            if (!paymentMethod) {
+
+                alert('⚠️ Tanpri chwazi yon metòd peman');
+                return;
+            }
+            
+            console.log("Pwosesis peman ak:", paymentMethod);
+            
+            // Simile pwosesis peman
+            alert('⏳ Pwosesis peman ak ' + paymentMethod + '...');
+            
+            setTimeout(() => {
+                const verificationCode = 'VER' + Math.floor(Math.random() * 10000);
+                console.log("Kòd verifikasyon kreye:", verificationCode);
+                
+                const modalContent = document.querySelector('#sellModal .modal-content');
+                modalContent.innerHTML = `
+                    <span class="close" onclick="closeSellModal()">&times;</span>
+                    <h2>✅ Peman Reisi!</h2>
+                    <div class="verification-code">
+                        🔐 Kòd Verifikasyon ou: ${verificationCode}
+                    </div>
+                    <p>Kopi kòd la ak antre li pou konfime enskripsyon ou:</p>
+                    <div class="form-group">
+                        <input type="text" id="verificationInput" placeholder="Antre kòd verifikasyon">
+                    </div>
+                    <button class="submit-btn" onclick="verifyCode('${verificationCode}')">🔍 Verifye</button>
+                `;
+            }, 2000);
+        }
+
+        // Fonksyon pou verifye kòd
+        function verifyCode(correctCode) {
+            const inputCode = document.getElementById('verificationInput').value;
+            console.log("Verifye kòd:", inputCode, "vs", correctCode);
+
+            
+            if (inputCode === correctCode) {
+                currentUser = { type: 'seller', verified: true };
+                sellers.push(currentUser);
+                
+                closeSellModal();
+                showSellerDashboard();
+                alert('🎉 Verifikasyon reisi! Ou ka kominòte ajoute pwodwi yo kounye a.');
+            } else {
+                alert('❌ Kòd la pa kòrèk. Tanpri eseye ankò.');
+
+            }
+        }
+
+        // Fonksyon pou ajoute nouvo pwodwi
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log("Ajoute nouvo pwodwi");
+            
+            const productData = {
+                name: document.getElementById('productName').value,
+                price: document.getElementById('productPrice').value,
+                description: document.getElementById('productDescription').value,
+                category: document.getElementById('productCategory').value,
+                seller: currentUser
+            };
+            
+            products.push(productData);
+            console.log("Pwodwi ajoute:", productData);
+            
+            // Ajoute pwodwi nan dashboard vandè
+            const sellerProductsGrid = document.getElementById('sellerProducts');
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.innerHTML = `
+                <h3>📦 ${productData.name}</h3>
+
+                <p><strong>Pri:</strong> $${productData.price}</p>
+                <p><strong>Deskripsyon:</strong> ${productData.description}</p>
+                <p><strong>Kategori:</strong> ${productData.category}</p>
+                <button class="submit-btn" onclick="removeProduct('${productData.name}')">🗑️ Retire</button>
+            `;
+            
+
+            // Si se premye pwodwi, retire mesaj default la
+            if (sellerProductsGrid.children.length === 1) {
+                sellerProductsGrid.innerHTML = '';
+            }
+            
+            sellerProductsGrid.appendChild(productCard);
+            
+            // Ajoute pwodwi nan dashboard achtè tou
+
+            const buyerProductsGrid = document.getElementById('buyerProducts');
+            const buyerProductCard = document.createElement('div');
+            buyerProductCard.className = 'product-card';
+            buyerProductCard.innerHTML = `
+                <h3>📦 ${productData.name}</h3>
+                <p><strong>Pri:</strong> $${productData.price}</p>
+
+                <p><strong>Deskripsyon:</strong> ${productData.description}</p>
+                <button class="submit-btn" onclick="buyProduct('${productData.name}', '$${productData.price}')">Achte Kounye a</button>
+            `;
+            buyerProductsGrid.appendChild(buyerProductCard);
+            
+            closeAddProductModal();
+            alert('🎉 Pwodwi ajoute ak siksè!');
+            
+            // Reset form
+            document.getElementById('addProductForm').reset();
+        });
+
+        // Fonksyon pou achte pwodwi
+        function buyProduct(productName, price) {
+            console.log("Eseye achte:", productName, price);
+            
+
+            if (!currentUser || currentUser.type !== 'buyer') {
+                alert('⚠️ Ou dwe anrejistre kòm achtè pou achte pwodwi yo');
+                openBuyModal();
+                return;
+            }
+            
+            if (confirm(`🛒 Ou vrèman vle achte ${productName} pou ${price}?`)) {
+                alert(`🎉 Ou achte: ${productName} pou ${price}. Mèsi pou acha ou!`);
+            }
+
+        }
+
+        // Fonksyon pou retire pwodwi
+        function removeProduct(productName) {
+            console.log("Retire pwodwi:", productName);
+            
+            if (confirm('❓ Ou vrèman vle retire pwodwi sa a?')) {
+                // Retire nan array products
+                products = products.filter(p => p.name !== productName);
+
+                alert('✅ Pwodwi retire ak siksè!');
+                
+                // Rechaje paj la
+                location.reload();
+            }
+        }
+
+        // Fèmen modal yo lè ou klike deyò
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target === modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+
+        // Teste si script la ap travay
+        console.log("✅ Script marketplace la chaje ak siksè!");
+    </script>
+</body>
+</html>

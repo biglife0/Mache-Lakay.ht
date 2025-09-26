@@ -1,0 +1,595 @@
+ <title>Asistans Komès Lakay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 500px;
+
+            height: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header h2 {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.bot {
+            background: #f0f0f0;
+            color: #333;
+
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input input {
+            flex: 1;
+
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            border-color: #4CAF50;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 12px 20px;
+
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chat-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .chat-input button:active {
+            transform: translateY(0);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #f9f9f9;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 10px 16px;
+            background: #f0f0f0;
+            border-radius: 18px;
+
+            border-bottom-left-radius: 4px;
+            align-self: flex-start;
+            max-width: 80px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #666;
+            border-radius: 50%;
+
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>🏠 Asistans Komès Multileng</h2>
+            <p>Kreyòl | Français | English | Español</p>
+        </div>
+
+        <div class="quick-actions">
+            <div class="quick-btn" onclick="quickMessage('Ki pwodwi ou genyen?')">🇭🇹 Pwodwi</div>
+            <div class="quick-btn" onclick="quickMessage('Quels produits avez-vous?')">🇫🇷 Produits</div>
+            <div class="quick-btn" onclick="quickMessage('What products do you have?')">🇺🇸 Products</div>
+            <div class="quick-btn" onclick="quickMessage('¿Qué productos tienen?')">🇪🇸 Productos</div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                🌍 <strong>Byenvini / Bienvenue / Welcome / Bienvenidos!</strong>
+                <br><br>
+                Mwen se asistans komès lakay nou an ki pale nan 4 lang:
+                <br>
+                🇭🇹 <strong>Kreyòl:</strong> Pwodwi, pri, kòmande, livrezon<br>
+                🇫🇷 <strong>Français:</strong> Produits, prix, commandes, livraison<br>
+                🇺🇸 <strong>English:</strong> Products, prices, orders, delivery<br>
+                🇪🇸 <strong>Español:</strong> Productos, precios, pedidos, entrega
+                <br><br>
+                Pale ak mwen nan nenpòt lang nan! 😊
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Ekri mesaj ou a..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Voye</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // NLP ak NLM - Konpreyansyon ak jesyon lang kreyòl
+        const nlpData = {
+            // Kategori ak mo kle yo
+            categories: {
+                'pwodwi': {
+                    keywords: ['pwodwi', 'bagay', 'machandiz', 'vann', 'gen', 'ki', 'sa', 'w', 'genyen', 'ak', 'manje', 'bwè', 'pwòpte', 'natirèl'],
+                    synonyms: ['atik', 'item', 'bagay', 'machandiz', 'kominote'],
+                    response: 'Nou gen yon varyete pwodwi yo: 🥘 Manje lakay (bannann boukannen, mayi moulen, pwa), 🧼 Pwodwi pwòpte (savon natirèl, detèjan), 🌿 Pwodwi natirèl (siwo myèl, te fèy), ak plis ankò. Ki tip pwodwi w enterese a?'
+                },
+
+                'pri': {
+                    keywords: ['pri', 'konbyen', 'koute', 'lajan', 'dola', 'goud', 'kòb', 'peye', 'chè', 'bon', 'mache'],
+                    synonyms: ['vale', 'pèz', 'kantite'],
+                    response: 'Pri nou yo depann sou pwodwi a:\n🥘 Manje: 25-150 goud\n🧼 Pwòpte: 35-200 goud\n🌿 Natirèl: 50-300 goud\nDi m ki pwodwi espesifik w vle konnen pri a!'
+                },
+                'kòmande': {
+
+                    keywords: ['kòmande', 'achte', 'pran', 'bezwen', 'vle', 'mande', 'rete', 'rezève'],
+                    synonyms: ['komète', 'pase', 'fè'],
+                    response: 'Pou kòmande: 📱 Rele nou nan 509-3456-7890 oswa 💬 voye yon mesaj nan WhatsApp nou an. Nou aksepte:\n💰 Kòb kontan\n📱 MonCash\n💳 Natcash\n🏦 Transfè ban'
+                },
+                'orè': {
+                    keywords: ['orè', 'ouvè', 'fèmen', 'travay', 'lè', 'ki', 'tan', 'jou', 'semèn'],
+                    synonyms: ['otè', 'òrè', 'tan'],
+                    response: 'Orè nou yo: 🌅 Lendi-Samdi: 7h maten - 6h aswe, 🌙 Dimanch: 9h maten - 4h aswe. Nou gen telefòn 24/7 pou òd ijè yo!'
+                },
+                'livrezon': {
+                    keywords: ['livrezon', 'livre', 'voye', 'rive', 'kote', 'adrès', 'ale', 'pote'],
+                    synonyms: ['renmèt', 'fè', 'rive'],
+                    response: 'Nou fè livrezon nan tout kominote a! 🚗\n📍 Zon nou kouvri yo: Sant-vil, Kafou, Delma\n💰 Frè livrezon: 25 goud\n🎁 Kòmande 200+ goud = Livrezon GRATIS!'
+                },
+                'kontak': {
+                    keywords: ['kontak', 'telefòn', 'rele', 'whatsapp', 'email', 'adrès', 'kote', 'jwenn'],
+                    synonyms: ['konekte', 'kominikasyon'],
+                    response: '📞 Telefòn: 509-3456-7890\n📱 WhatsApp: 509-3456-7890\n📧 Email: komeslakay@gmail.com\n📍 Adrès: 123 Lari Prensipal, Pòtoprens\n🕐 Reponn garanti nan 30 minit!'
+                }
+            },
+            
+            // Salitasyon ak ekspresyon komen yo
+            greetings: {
+                keywords: ['bonjou', 'bonswa', 'alo', 'salut', 'kijan', 'sak', 'pase', 'kòman', 'ou', 'ye'],
+                responses: [
+                    'Bonjou! 😊 Mwen kontan w vizite nou. Kijan mwen ka ede w jodi a?',
+
+                    'Alo! 👋 Byenvini nan komès lakay nou an! Sa w bezwen?',
+                    'Bonswa! ✨ Mwen la pou ede w ak tout kesyon w yo!'
+                ]
+            },
+            
+                            merci: {
+                keywords: ['mèsi', 'gras', 'apresye', 'bon', 'bagay', 'okè'],
+                responses: [
+                    'Pa gen pwoblèm! 😊 Mwen la pou ede w nenpòt lè.',
+                    'Mwen kontan mwen te ka ede w! Gen lòt bagay?',
+
+                    'Se devwa m! 🤗 Pa ezite rele m si w gen lòt kesyon.'
+                ]
+            },
+            
+            // Deteksyon lang ak reponn multileng
+            languages: {
+                creole: {
+                    patterns: ['mwen', 'ou', 'li', 'nou', 'yo', 'gen', 'nan', 'ak', 'pou', 'ki', 'sa', 'kòman', 'kote', 'lè'],
+                    confidence_threshold: 0.3
+                },
+                french: {
+
+                    patterns: ['je', 'tu', 'il', 'nous', 'vous', 'ils', 'le', 'la', 'les', 'de', 'du', 'des', 'pour', 'avec', 'comment', 'où', 'quand', 'bonjour', 'merci'],
+                    confidence_threshold: 0.3
+                },
+                english: {
+                    patterns: ['i', 'you', 'he', 'she', 'we', 'they', 'the', 'a', 'an', 'for', 'with', 'how', 'where', 'when', 'hello', 'thank', 'thanks'],
+                    confidence_threshold: 0.3
+                },
+
+                spanish: {
+                    patterns: ['yo', 'tú', 'él', 'ella', 'nosotros', 'ellos', 'el', 'la', 'los', 'las', 'de', 'para', 'con', 'cómo', 'dónde', 'cuándo', 'hola', 'gracias'],
+                    confidence_threshold: 0.3
+                }
+            },
+            
+            // Reponn nan plizyè lang yo
+            multilingual_responses: {
+                welcome: {
+                    creole: 'Bonjou! 😊 Mwen se asistans komès lakay nou an. Kijan mwen ka ede w?',
+                    french: 'Bonjour! 😊 Je suis l\'assistant de notre commerce local. Comment puis-je vous aider?',
+                    english: 'Hello! 😊 I\'m the assistant for our home business. How can I help you?',
+                    spanish: '¡Hola! 😊 Soy el asistente de nuestro negocio local. ¿Cómo puedo ayudarte?'
+                },
+                products: {
+                    creole: 'Nou gen pwodwi sa yo: 🥘 Manje lakay, 🧼 Pwodwi pwòpte, 🌿 Pwodwi natirèl. Ki sa w enterese?',
+                    french: 'Nous avons ces produits: 🥘 Plats locaux, 🧼 Produits de nettoyage, 🌿 Produits naturels. Qu\'est-ce qui vous intéresse?',
+                    english: 'We have these products: 🥘 Local food, 🧼 Cleaning products, 🌿 Natural products. What interests you?',
+                    spanish: 'Tenemos estos productos: 🥘 Comida local, 🧼 Productos de limpieza, 🌿 Productos naturales. ¿Qué te interesa?'
+
+                },
+                prices: {
+                    creole: 'Pri nou yo: 🥘 Manje: 25-150 goud, 🧼 Pwòpte: 35-200 goud, 🌿 Natirèl: 50-300 goud',
+                    french: 'Nos prix: 🥘 Repas: 25-150 gourdes, 🧼 Nettoyage: 35-200 gourdes, 🌿 Naturel: 50-300 gourdes',
+                    english: 'Our prices: 🥘 Food: 25-150 gourdes, 🧼 Cleaning: 35-200 gourdes, 🌿 Natural: 50-300 gourdes',
+                    spanish: 'Nuestros precios: 🥘 Comida: 25-150 gourdes, 🧼 Limpieza: 35-200 gourdes, 🌿 Natural: 50-300 gourdes'
+                },
+                contact: {
+                    creole: '📞 Telefòn: 509-3456-7890 | 📱 WhatsApp: 509-3456-7890 | 📧 Email: komeslakay@gmail.com',
+                    french: '📞 Téléphone: 509-3456-7890 | 📱 WhatsApp: 509-3456-7890 | 📧 Email: komeslakay@gmail.com',
+                    english: '📞 Phone: 509-3456-7890 | 📱 WhatsApp: 509-3456-7890 | 📧 Email: komeslakay@gmail.com',
+                    spanish: '📞 Teléfono: 509-3456-7890 | 📱 WhatsApp: 509-3456-7890 | 📧 Email: komeslakay@gmail.com'
+                },
+                thanks: {
+                    creole: 'Pa gen pwoblèm! 😊 Mwen la pou ede w nenpòt lè.',
+                    french: 'De rien! 😊 Je suis là pour vous aider à tout moment.',
+                    english: 'You\'re welcome! 😊 I\'m here to help you anytime.',
+
+                    spanish: '¡De nada! 😊 Estoy aquí para ayudarte en cualquier momento.'
+                },
+                not_understand: {
+                    creole: 'Mwen pa konprann byen. Ou ka mande sou: pwodwi, pri, kòmande, orè, livrezon.',
+                    french: 'Je ne comprends pas bien. Vous pouvez demander sur: produits, prix, commandes, heures, livraison.',
+                    english: 'I don\'t understand well. You can ask about: products, prices, orders, hours, delivery.',
+                    spanish: 'No entiendo bien. Puedes preguntar sobre: productos, precios, pedidos, horarios, entrega.'
+                }
+            }
+        };
+
+        // Fonksyon deteksyon lang
+        function detectLanguage(text) {
+            const words = text.toLowerCase().split(/\s+/);
+            const scores = {};
+
+            
+            for (const [lang, data] of Object.entries(nlpData.languages)) {
+                let matches = 0;
+                for (const word of words) {
+                    if (data.patterns.some(pattern => word.includes(pattern) || pattern.includes(word))) {
+                        matches++;
+                    }
+                }
+                scores[lang] = matches / words.length;
+
+            }
+            
+            // Jwenn lang ki gen pi gwo score la
+            let detectedLang = 'creole'; // Default
+            let maxScore = 0;
+            
+            for (const [lang, score] of Object.entries(scores)) {
+                if (score > maxScore && score >= nlpData.languages[lang].confidence_threshold) {
+                    maxScore = score;
+                    detectedLang = lang;
+
+                }
+            }
+            
+            return detectedLang;
+        }
+
+        // Fonksyon NLP pou konprann entansyon
+        function analyzeIntent(text, detectedLang) {
+            const words = text.toLowerCase().split(/\s+/);
+            let bestMatch = null;
+            let maxScore = 0;
+            
+            // Chèche nan kategori yo
+
+            for (const [category, data] of Object.entries(nlpData.categories)) {
+                let score = 0;
+                const totalKeywords = data.keywords.length;
+                
+                for (const word of words) {
+                    // Chèche mo egzak yo
+                    if (data.keywords.includes(word)) {
+                        score += 2;
+                    }
+
+                    // Chèche sinonim yo
+                    if (data.synonyms && data.synonyms.some(syn => word.includes(syn) || syn.includes(word))) {
+                        score += 1;
+                    }
+                    // Chèche mo ki gen rapò
+                    if (data.keywords.some(keyword => word.includes(keyword) || keyword.includes(word))) {
+                        score += 1;
+                    }
+                }
+
+                
+                // Kalkilè pousantaj match
+                const matchPercentage = score / totalKeywords;
+                
+                if (matchPercentage > maxScore && matchPercentage > 0.1) {
+                    maxScore = matchPercentage;
+                    bestMatch = category;
+                }
+            }
+            
+            return { intent: bestMatch, confidence: maxScore, language: detectedLang };
+        }
+
+        // Fonksyon pou bay reponn multileng
+        function getMultilingualResponse(intent, language) {
+            if (nlpData.multilingual_responses[intent] && nlpData.multilingual_responses[intent][language]) {
+                return nlpData.multilingual_responses[intent][language];
+            }
+            
+            // Si pa gen reponn nan lang sa a, itilize kreyòl kòm default
+            if (nlpData.multilingual_responses[intent] && nlpData.multilingual_responses[intent]['creole']) {
+                return nlpData.multilingual_responses[intent]['creole'];
+            }
+            
+
+            return nlpData.multilingual_responses.not_understand[language] || nlpData.multilingual_responses.not_understand['creole'];
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '') return;
+
+            // Montre mesaj moun nan
+            addMessage(message, 'user');
+            messageInput.value = '';
+
+
+            // Montre indikè k ap tape
+            showTyping();
+
+            // Reponn apre yon ti tan
+            setTimeout(() => {
+                hideTyping();
+                const response = getBotResponse(message);
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+
+        function addMessage(message, sender) {
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            // Detekte lang lan
+
+            const detectedLang = detectLanguage(message);
+            
+            // Analize entansyon ak NLP
+            const analysis = analyzeIntent(message, detectedLang);
+            
+            // Chèche si se salitasyon
+            const lowerMessage = message.toLowerCase();
+            const greetingWords = nlpData.greetings.keywords;
+            const isGreeting = greetingWords.some(word => lowerMessage.includes(word));
+            
+            if (isGreeting) {
+                const greetingResponses = nlpData.greetings.responses;
+                return greetingResponses[Math.floor(Math.random() * greetingResponses.length)];
+            }
+            
+            // Chèche si se remèsiman
+            const thanksWords = nlpData.merci.keywords;
+            const isThanks = thanksWords.some(word => lowerMessage.includes(word));
+            
+            if (isThanks) {
+                return getMultilingualResponse('thanks', detectedLang);
+            }
+            
+            // Si nou jwenn yon entansyon ak konfyans ki bon
+            if (analysis.intent && analysis.confidence > 0.2) {
+                switch(analysis.intent) {
+                    case 'pwodwi':
+                        return getMultilingualResponse('products', detectedLang);
+                    case 'pri':
+                        return getMultilingualResponse('prices', detectedLang);
+                    case 'kòmande':
+                        return nlpData.categories.kòmande.response;
+                    case 'orè':
+                        return nlpData.categories.orè.response;
+                    case 'livrezon':
+                        return nlpData.categories.livrezon.response;
+                    case 'kontak':
+                        return getMultilingualResponse('contact', detectedLang);
+                    default:
+                        return getMultilingualResponse('not_understand', detectedLang);
+                }
+            }
+            
+            // Si nou pa konprann
+            return getMultilingualResponse('not_understand', detectedLang);
+
+        }
+
+        function showTyping() {
+            typingIndicator.style.display = 'block';
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+
+        function quickMessage(message) {
+            messageInput.value = message;
+            sendMessage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        // Mete focus sou input la
+        messageInput.focus();
+    </script>
+</body>
+</html>
