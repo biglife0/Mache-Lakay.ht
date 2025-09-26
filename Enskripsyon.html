@@ -474,6 +474,35 @@
 
     // Teste si script la ap travay
     console.log("✅ Script marketplace la chaje ak siksè!");
+
+
+
+
+function saveAndRedirect() {
+  if (!selectedType) {
+    alert('Tanpri chwazi si ou vle vann oswa achte!');
+    return;
+  }
+  const form = document.getElementById('registrationForm');
+  const data = {
+    userType: selectedType,
+    fullName: form.fullName.value,
+    phone: form.phone.value,
+    email: form.email.value,
+    password: form.password.value,
+    location: form.location.value,
+    businessName: form.businessName?.value || '',
+    category: form.category?.value || '',
+    description: form.description?.value || '',
+    experience: form.experience?.value || '',
+    interests: form.interests? Array.from(form.interests.selectedOptions).map(opt => opt.value): [],
+    budget: form.budget?.value || ''
+  };
+  localStorage.setItem('userData', JSON.stringify(data));
+  alert('Enskripsyon ou an resi! Nou pral kontakte ou nan kèk jou.');
+  window.location.href = 'Gran paj.html';
+}
+
 </script>
 </body>
 </html>
