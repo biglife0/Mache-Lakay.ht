@@ -44,7 +44,7 @@
             </div>
 
             <button type="submit" class="login-btn" id="loginBtn">
-
+           <button type="submit" class="submit-btn" onclick="redirectToMainPage()">Enskri Kounye a</button>
                 <span id="btnText">Konekte</span>
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
@@ -70,147 +70,304 @@
         </div>
     </div>
 
+<script>
+    console.log("Script ap kòmanse...");
 
-    <script>
-        // Elèman yo
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const passwordToggle = document.getElementById('passwordToggle');
-        const loginBtn = document.getElementById('loginBtn');
-        const btnText = document.getElementById('btnText');
-        const loading = document.getElementById('loading');
-        const successMessage = document.getElementById('successMessage');
+// Variables pou stock done yo
+let currentUser = null;
+let products = JSON.parse(localStorage.getItem('marketplaceProducts')) || [];
+let sellers = JSON.parse(localStorage.getItem('marketplaceSellers')) || [];
+let buyers = JSON.parse(localStorage.getItem('marketplaceBuyers')) || [];
+
+// Fonksyon pou ouvè modal achte
+function openBuyModal() {
+    console.log("Ouvè modal achte");
+    document.getElementById('buyModal').style.display = 'block';
+}
+
+// Fonksyon pou fèmen modal achte
+function closeBuyModal() {
+    console.log("Fèmen modal achte");
+    document.getElementById('buyModal').style.display = 'none';
+}
+
+// Fonksyon pou ouvè modal vann
+function openSellModal() {
+    console.log("Ouvè modal vann");
+    document.getElementById('sellModal').style.display = 'block';
+}
+
+// Fonksyon pou fèmen modal vann
+function closeSellModal() {
+    console.log("Fèmen modal vann");
+    document.getElementById('sellModal').style.display = 'none';
+}
+
+// Fonksyon pou ouvè modal ajoute pwodwi
+function openAddProductModal() {
+    console.log("Ouvè modal ajoute pwodwi");
+    document.getElementById('addProductModal').style.display = 'block';
+}
+
+// Fonksyon pou fèmen modal ajoute pwodwi
+function closeAddProductModal() {
+    console.log("Fèmen modal ajoute pwodwi");
+    document.getElementById('addProductModal').style.display = 'none';
+}
+
+// Fonksyon pou anrejistre itilizatè ak localStorage
+function registerUser(userData) {
+    if (userData.userType === 'seller') {
+        // Verifye si vandè a deja egziste
+        const existingSeller = sellers.find(seller => seller.email === userData.email);
+        if (!existingSeller) {
+            sellers.push(userData);
+            localStorage.setItem('marketplaceSellers', JSON.stringify(sellers));
+        }
+    } else {
+        // Verifye si achtè a deja egziste
+        const existingBuyer = buyers.find(buyer => buyer.email === userData.email);
+        if (!existingBuyer) {
+            buyers.push(userData);
+            localStorage.setItem('marketplaceBuyers', JSON.stringify(buyers));
+        }
+    }
+    
+    // Sere itilizatè kounye a nan localStorage
+    localStorage.setItem('currentMarketplaceUser', JSON.stringify(userData));
+    currentUser = userData;
+}
+
+// Fonksyon pou w voye nan Gran paj.html
+function redirectToMainPage() {
+    window.location.href = 'Gran paj.html';
+}
+
+// Modifye fòm enskripsyon prensipal la
+document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!selectedType) {
+        alert('Tanpri chwazi si ou vle vann oswa achte!');
+        return;
+    }
+
+    // Ramase done fòm nan
+    const userData = {
+        fullName: document.getElementById('fullName').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        location: document.getElementById('location').value,
+        userType: selectedType,
+        registrationDate: new Date().toISOString()
+    };
+
+    // Ajoute done espesifik selon tip itilizatè a
+    if (selectedType === 'seller') {
+        userData.businessName = document.getElementById('businessName').value;
+        userData.category = document.getElementById('category').value;
+        userData.description = document.getElementById('description').value;
+        userData.experience = document.getElementById('experience').value;
+        userData.paid = false; // Default, ap chanje lè peman fèt
+    } else {
+        userData.interests = Array.from(document.getElementById('interests').selectedOptions).map(option => option.value);
+        userData.budget = document.getElementById('budget').value;
+    }
+
+    // Anrejistre itilizatè a
+    registerUser(userData);
+
+    // Redirije selon tip itilizatè a
+    if (selectedType === 'seller') {
+        openSellModal(); // Ouvè modal peman pou vandè
+    } else {
+        // Pou achtè, redirije imedyatman
+        alert('🎉 Ou anrejistre ak siksè! Ou ka kounye a kominòte achte.');
+        redirectToMainPage();
+    }
+
+    // Reset fòm nan
+    this.reset();
+    selectedType = '';
+    document.querySelectorAll('.type-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    document.getElementById('sellerFields').classList.add('hidden');
+    document.getElementById('buyerFields').classList.add('hidden');
+});
+
+// Fonksyon pou trete peman
+function processPayment() {
+    const paymentMethod = document.getElementById('paymentMethod').value;
+
+    if (!paymentMethod) {
+        alert('⚠️ Tanpri chwazi yon metòd peman');
+        return;
+    }
+
+    console.log("Pwosesis peman ak:", paymentMethod);
+
+    // Simile pwosesis peman
+    alert('⏳ Pwosesis peman ak ' + paymentMethod + '...');
+
+    setTimeout(() => {
+        const verificationCode = 'VER' + Math.floor(Math.random() * 10000);
+        console.log("Kòd verifikasyon kreye:", verificationCode);
+
+        const modalContent = document.querySelector('#sellModal .modal-content');
+        modalContent.innerHTML = `
+            <span class="close" onclick="closeSellModal()">&times;</span>
+            <h2>✅ Peman Reisi!</h2>
+            <div class="verification-code">
+                🔐 Kòd Verifikasyon ou: ${verificationCode}
+            </div>
+            <p>Kopi kòd la ak antre li pou konfime enskripsyon ou:</p>
+            <div class="form-group">
+                <input type="text" id="verificationInput" placeholder="Antre kòd verifikasyon">
+            </div>
+            <button class="submit-btn" onclick="verifyCode('${verificationCode}')">🔍 Verifye</button>
+        `;
+    }, 2000);
+}
+
+// Fonksyon pou verifye kòd
+function verifyCode(correctCode) {
+    const inputCode = document.getElementById('verificationInput').value;
+
+    if (inputCode === correctCode) {
+        // Mete ajou vandè a kòm verifye
+        currentUser.paid = true;
+        currentUser.verified = true;
+        localStorage.setItem('currentMarketplaceUser', JSON.stringify(currentUser));
         
-        // Fonksyon yo
-        function validateEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email) || email.length > 3; // Aksepte non itilizatè tou
+        // Mete ajou lis vandè yo
+        const sellerIndex = sellers.findIndex(seller => seller.email === currentUser.email);
+        if (sellerIndex !== -1) {
+            sellers[sellerIndex].paid = true;
+            sellers[sellerIndex].verified = true;
+            localStorage.setItem('marketplaceSellers', JSON.stringify(sellers));
         }
 
-        function validatePassword(password) {
-            return password.length >= 6;
+        closeSellModal();
+        alert('🎉 Verifikasyon reisi! Ou ka kounye a kominòte vann sou platfòm nan.');
+        redirectToMainPage();
+    } else {
+        alert('❌ Kòd la pa kòrèk. Tanpri eseye ankò.');
+    }
+}
+
+// Fonksyon pou ajoute nouvo pwodwi
+document.getElementById('addProductForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    console.log("Ajoute nouvo pwodwi");
+
+    const productData = {
+        id: Date.now(), // ID inik
+        name: document.getElementById('productName').value,
+        price: document.getElementById('productPrice').value,
+        description: document.getElementById('productDescription').value,
+        category: document.getElementById('productCategory').value,
+        seller: currentUser.email,
+        dateAdded: new Date().toISOString()
+    };
+
+    products.push(productData);
+    
+    // Sere nan localStorage
+    localStorage.setItem('marketplaceProducts', JSON.stringify(products));
+    console.log("Pwodwi ajoute:", productData);
+
+    // Ajoute pwodwi nan afichaj
+    updateProductDisplay();
+
+    closeAddProductModal();
+    alert('🎉 Pwodwi ajoute ak siksè!');
+
+    // Reset fòm nan
+    this.reset();
+});
+
+// Fonksyon pou mete ajou afichaj pwodwi yo
+function updateProductDisplay() {
+    // Kod pou mete ajou lis pwodwi yo nan paj prensipal la
+    console.log("Met ajou afichaj pwodwi yo");
+}
+
+// Fonksyon pou achte pwodwi
+function buyProduct(productName, price) {
+    console.log("Eseye achte:", productName, price);
+
+    if (!currentUser || currentUser.userType !== 'buyer') {
+        alert('⚠️ Ou dwe anrejistre kòm achtè pou achte pwodwi yo');
+        return;
+    }
+
+    if (confirm(`🛒 Ou vrèman vle achte ${productName} pou ${price}?`)) {
+        alert(`🎉 Ou achte: ${productName} pou ${price}. Mèsi pou acha ou!`);
+    }
+}
+
+// Fonksyon pou retire pwodwi
+function removeProduct(productId) {
+    console.log("Retire pwodwi:", productId);
+
+    if (confirm('❓ Ou vrèman vle retire pwodwi sa a?')) {
+        // Retire nan array products
+        products = products.filter(p => p.id !== productId);
+        
+        // Mete ajou localStorage
+        localStorage.setItem('marketplaceProducts', JSON.stringify(products));
+
+        alert('✅ Pwodwi retire ak siksè!');
+        updateProductDisplay();
+    }
+}
+
+// Fonksyon pou chaje done depi localStorage lè paj la chaje
+function loadFromLocalStorage() {
+    const savedUser = localStorage.getItem('currentMarketplaceUser');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        console.log("Itilizatè chaje:", currentUser);
+    }
+    
+    console.log("Pwodwi chaje:", products.length);
+    console.log("Vandè chaje:", sellers.length);
+    console.log("Achtè chaje:", buyers.length);
+}
+
+// Fèmen modal yo lè ou klike deyò
+window.onclick = function(event) {
+    const modals = document.getElementsByClassName('modal');
+    for (let i = 0; i < modals.length; i++) {
+        if (event.target === modals[i]) {
+            modals[i].style.display = 'none';
         }
+    }
+}
 
-        function showError(inputId, errorId, message) {
-            const input = document.getElementById(inputId);
-            const error = document.getElementById(errorId);
-            input.classList.add('error');
-            error.textContent = message;
-            error.style.display = 'block';
+// Chaje done lè paj la fin chaje
+window.addEventListener('load', function() {
+    loadFromLocalStorage();
+    console.log("✅ Script marketplace la chaje ak siksè!");
+});
+
+// Fonksyon pou tcheke si yon itilizatè deja konekte
+function checkExistingUser() {
+    const existingUser = localStorage.getItem('currentMarketplaceUser');
+    if (existingUser) {
+        if (confirm('Gen yon itilizatè ki deja konekte. Ou vle kontinye ak kont sa a?')) {
+            redirectToMainPage();
+        } else {
+            // Dekonekte itilizatè a si li pa vle kontinye
+            localStorage.removeItem('currentMarketplaceUser');
         }
+    }
+}
 
-        function hideError(inputId, errorId) {
-            const input = document.getElementById(inputId);
-
-            const error = document.getElementById(errorId);
-            input.classList.remove('error');
-            error.style.display = 'none';
-        }
-
-        function setLoading(isLoading) {
-            if (isLoading) {
-                loginBtn.disabled = true;
-                btnText.style.display = 'none';
-                loading.style.display = 'block';
-
-            } else {
-                loginBtn.disabled = false;
-                btnText.style.display = 'block';
-                loading.style.display = 'none';
-            }
-        }
-
-        function showSuccess() {
-            successMessage.style.display = 'block';
-            setTimeout(() => {
-                // Ou ka redirije moun nan isit la
-                alert('Redireksyon nan paj prensipal la...');
-            }, 2000);
-        }
-
-        // Event listeners yo
-        passwordToggle.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type',type);
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
-
-        emailInput.addEventListener('input', function() {
-            if (this.classList.contains('error')) {
-                hideError('email', 'emailError');
-            }
-        });
-
-        passwordInput.addEventListener('input', function() {
-            if (this.classList.contains('error')) {
-                hideError('password', 'passwordError');
-            }
-        });
-
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = emailInput.value.trim();
-
-            const password = passwordInput.value;
-            let isValid = true;
-
-            // Validation
-            if (!validateEmail(email)) {
-                showError('email', 'emailError', 'Tanpri antre yon imel ki valab oswa non itilizatè');
-                isValid = false;
-            }
-
-            if (!validatePassword(password)) {
-                showError('password', 'passwordError', 'Modpas la dwe gen omwen 6 karaktè');
-                isValid = false;
-            }
-
-            if (isValid) {
-                setLoading(true);
-                
-                // Simile yon request (ou ka chanje sa a ak yon API request reyèl)
-                setTimeout(() => {
-                    setLoading(false);
-                    
-                    // Tcheke konte yo (sa se yon egzanp sèlman)
-                    if (email === 'admin' && password === '123456') {
-                        showSuccess();
-                    } else if (email.includes('@') && password.length >= 6) {
-                        showSuccess();
-                    } else {
-                        alert('Enfòmasyon koneksyon yo pa bon. Eseye ankò!');
-                    }
-                }, 2000);
-            }
-        });
-
-        // Social login yo
-
-        document.getElementById('googleLogin').addEventListener('click', function() {
-            alert('Koneksyon ak Google...');
-        });
-
-        document.getElementById('facebookLogin').addEventListener('click', function() {
-            alert('Koneksyon ak Facebook...');
-        });
-
-        document.getElementById('forgotPassword').addEventListener('click', function(e) {
-            e.preventDefault();
-            const email = prompt('Antre imel ou a pou reset modpas la:');
-            if (email) {
-                alert('Nou voye yon lyen reset nan: ' + email);
-            }
-        });
-
-        document.getElementById('registerLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Redireksyon nan paj enskripsyon an...');
-        });
-
-        // Otofokis sou imel lan
-        emailInput.focus();
-    </script>
+// Tcheke itilizatè konekte lè paj la chaje
+checkExistingUser();
+</script>
 </body>
 </html>
