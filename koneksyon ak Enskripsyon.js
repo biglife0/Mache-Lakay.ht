@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('.form-box');
+    const form = document.querySelector('.form-group');
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // koneksyon
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('.form-box');
+    const form = document.querySelector('.form-group');
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -55,6 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         sessionStorage.setItem('kounye_a', JSON.stringify(itilizate));
 
-        window.location.href = 'ajouterEtudiant.html';
+        window.location.href = 'Gran paj.html';
     });
 });
