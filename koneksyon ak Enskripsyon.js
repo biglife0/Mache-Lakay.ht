@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem(email, JSON.stringify(itilizate));
 
         alert(`Byenvini ${non} pami nou`);
-        window.location.href = 'konekte.html';
+        window.location.href = 'Konekte.html';
     });
 });
 
